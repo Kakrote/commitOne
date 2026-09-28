@@ -4,5 +4,5 @@ export interface RegisterInput {
     employeeId?: string;
     department?: string;
     designation?: string;
-
+    password: string;
 }
