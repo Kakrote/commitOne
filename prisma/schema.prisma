@@ -12,6 +12,10 @@ datasource db {
   provider = "postgresql"
 }
 
+enum FacultyRole {
+  FACULTY
+  SUPER_ADMIN
+}
 
 model FacultyMember {
   id          String   @id @default(cuid())
@@ -21,6 +25,7 @@ model FacultyMember {
   designation String?
   department  String?
   password    String
+  role        FacultyRole @default(FACULTY)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

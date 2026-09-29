@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import logger from "../utils/logger";
+import {AuthenticatedUser} from "../types/auth";
 
 export const authenticate = (req:Request,res:Response,next:NextFunction)=>{
     const authHeader = req.headers.authorization // checks the authorization header
@@ -15,8 +16,14 @@ export const authenticate = (req:Request,res:Response,next:NextFunction)=>{
     }
 
     try{
-        const decoded = jwt.verify(token,process.env.JWT_SECRET as string); // verifies the token using thr secret key 
-        (req as any).user = decoded; // attaches the decoded user information to the request object.
+        const decoded = jwt.verify(token,process.env.JWT_SECRET as string);
+        if (typeof decoded === "string" || typeof decoded.id !== "string") {
+            return res.status(401).json({
+                message:"Unauthorized: invalid token payload"
+            });
+        }
+
+        req.user = decoded as AuthenticatedUser;
         next(); // calls the next middleware function in the stack 
     }
     catch {

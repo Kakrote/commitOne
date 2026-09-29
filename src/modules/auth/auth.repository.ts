@@ -13,6 +13,7 @@ export const findUserByEmail = async (email:string)=>{
             designation:true,
             department:true,
             password:true,
+            role:true,
             createdAt:true,
             updatedAt:true,
         }

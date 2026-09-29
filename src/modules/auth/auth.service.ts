@@ -56,6 +56,7 @@ export const loginFaculty = async (facultyRecord:{email:string,password:string})
         {
             id:faculty.id,
             email:faculty.email,
+            role:faculty.role,
 
         },
         jwtSecret,{
