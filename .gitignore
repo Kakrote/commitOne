@@ -52,6 +52,8 @@ prisma/.db-journal
 prisma/migrations/
 /generated/
 /src/generated/prisma
+backend/src/generated/prisma
+backend/uploads/
 
 # Testing
 .playwright/

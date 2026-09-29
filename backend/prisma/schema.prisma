@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum FacultyRole {
+  FACULTY
+  SUPER_ADMIN
+}
+
+model FacultyMember {
+  id          String   @id @default(cuid())
+  employeeId  String?  @unique
+  name        String
+  email       String   @unique
+  designation String?
+  department  String?
+  password    String?
+  canLogin    Boolean  @default(false)
+  role        FacultyRole @default(FACULTY)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Committee Memberships
+  committeeMemberships CommitteeMember[]
+
+  // Chairman Of
+  chairedCommittees Committee[] @relation("CommitteeChairman")
+
+  // Member Secretary Of
+  secretaryCommittees Committee[] @relation("CommitteeSecretary")
+
+}
+
+model Committee {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+
+  chairmanId  String
+  secretaryId String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chairman FacultyMember @relation("CommitteeChairman", fields: [chairmanId], references: [id])
+
+  secretary FacultyMember @relation("CommitteeSecretary", fields: [secretaryId], references: [id])
+
+  members CommitteeMember[]
+
+  meetingMinutes MeetingMinute[]
+}
+
+model CommitteeMember {
+  id          String @id @default(cuid())
+
+  committeeId String
+  facultyId   String
+
+  joinedAt DateTime @default(now())
+
+  committee Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+
+  faculty FacultyMember @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@unique([committeeId, facultyId])
+}
+
+model MeetingMinute {
+  id          String   @id @default(cuid())
+
+  committeeId String
+
+  title       String
+
+  meetingDate DateTime
+
+  pdfUrl      String
+
+  uploadedAt  DateTime @default(now())
+
+  committee Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+
+  @@index([committeeId])
+}
