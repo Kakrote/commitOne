@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import {findUserByEmail,addFaculty} from "./auth.repository";
 import { RegisterInput } from "./auth.types";
 import {AppError} from "../../utils/appError";
-import { email } from "zod";
 
 type FacultyRecord = NonNullable<Awaited<ReturnType<typeof findUserByEmail>>>;
 type SafeFacultyRecord = Omit<FacultyRecord, "password">;
@@ -38,14 +37,19 @@ export const loginFaculty = async (facultyRecord:{email:string,password:string})
 
     const faculty = await findUserByEmail(facultyRecord.email);
     if(!faculty){
-        throw new AppError("this mail is not found ",401);
+        throw new AppError("Invalid credentials",401);
     }
     const isPassword = await bcrypt.compare(
         facultyRecord.password,
         faculty.password
     )
     if(!isPassword){
-        throw new AppError("invalid cradentials",401);
+        throw new AppError("Invalid credentials",401);
+    }
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if(!jwtSecret){
+        throw new AppError("Authentication is not configured",500);
     }
 
     const token = jwt.sign(
@@ -54,7 +58,7 @@ export const loginFaculty = async (facultyRecord:{email:string,password:string})
             email:faculty.email,
 
         },
-        process.env.JWT_SECRET!,{
+        jwtSecret,{
             expiresIn:"7d",
         }
     );

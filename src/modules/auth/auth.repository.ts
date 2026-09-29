@@ -1,9 +1,8 @@
-import { email } from "zod";
 import {prisma} from "../../lib/prisma";
 import { RegisterInput } from "./auth.types";
 
 export const findUserByEmail = async (email:string)=>{
-    return await prisma.faculty.findunique({
+    return await prisma.facultyMember.findUnique({
         where:{
            email:email
         },
@@ -22,7 +21,7 @@ export const findUserByEmail = async (email:string)=>{
 
 
 export const addFaculty= async(facultyData:RegisterInput)=>{
-    return await prisma.FacultyMember.create({
+    return await prisma.facultyMember.create({
         data:{
             name:facultyData.name,
             email:facultyData.email,
