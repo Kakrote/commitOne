@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import authRouter from "./modules/auth/auth.routes";
+import router from "./routes/index";
 import {errorHandler} from "./middlewares/error.middleware";
 
 const app = express();
@@ -12,7 +12,7 @@ app.get("/",(req,res)=>{
     res.send("hello world from express");
 })
 
-app.use("/api/auth", authRouter);
+app.use("/api",router); // router is like a gateway for the apis 
 app.use(errorHandler);
 
 export default app;
