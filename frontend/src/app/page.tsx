@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   BookOpen,
   CalendarDays,
+  Check,
   ChevronRight,
   FileText,
   LayoutDashboard,
@@ -166,30 +167,49 @@ export default function Home() {
           </div>
         </aside>
 
-        <section ref={overviewRef} className="w-full max-w-[1180px] px-5 py-10 sm:px-10 lg:px-[5.5vw] lg:py-[52px]">
+        <section ref={overviewRef} className="w-full max-w-[1180px] px-5 py-8 sm:px-10 lg:px-[5.5vw] lg:py-10">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
             <div>
               <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#8d9b95]">Tuesday, September 29, 2026</p>
-              <h1 className="text-[clamp(29px,3.2vw,43px)] font-bold leading-tight tracking-[-0.06em]">Good morning, {user.name?.split(" ")[0] ?? "there"}.</h1>
-              <p className="mt-2 text-sm text-[#71807c]">Keep your committees moving with one clear place for decisions and records.</p>
+              <h1 className="text-[clamp(29px,3.2vw,43px)] font-bold leading-tight tracking-[-0.06em]">Hi there, {user.name?.split(" ")[0] ?? "there"}.</h1>
+              <p className="mt-2 text-sm text-[#71807c]">Your committee workspace, all in one clear view.</p>
             </div>
             {user.role === "SUPER_ADMIN" && <button className="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-[#27655a] px-4 py-3 text-xs font-bold text-white shadow-lg shadow-[#27655a]/15 transition hover:-translate-y-0.5 hover:bg-[#1b544a]" onClick={() => setShowCreate(true)}><Plus size={17} /> New committee</button>}
           </div>
 
           {notice && <div className="mt-5 flex items-center gap-2 rounded-lg border border-[#f0c9bd] bg-[#fff3ee] px-3 py-2.5 text-xs text-[#9b4f3c]"><X size={16} />{notice}<button className="ml-auto" onClick={() => setNotice("")}><X size={14} /></button></div>}
 
-          <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Stat icon={<Users size={18} />} value={committees.length} label="Active committees" color="bg-[#dfeaf3] text-[#4f748f]" />
             <Stat icon={<FileText size={18} />} value={committees.reduce((sum, item) => sum + item._count.meetingMinutes, 0)} label="Minutes filed" color="bg-[#dcefe5] text-[#478268]" />
             <Stat icon={<CalendarDays size={18} />} value="This week" label="Next review" color="bg-[#f8e7d8] text-[#9b6a4b]" />
           </div>
 
-          <div className="mt-12 flex items-end justify-between gap-4">
+          <div className="mt-7 grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
+            <div className="relative overflow-hidden rounded-xl bg-[#17322d] p-5 text-white shadow-lg shadow-[#17322d]/10 sm:p-6">
+              <div className="relative z-10 max-w-lg">
+                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#b7d5c6]">Workspace pulse</span>
+                <h2 className="mt-3 text-2xl font-bold tracking-[-0.05em]">Keep the record moving.</h2>
+                <p className="mt-2 max-w-md text-xs leading-relaxed text-[#c2dcd0]">{committees.length ? `${committees[0].name} is your latest active committee. Open it to review people and meeting records.` : "Your workspace is ready for its first committee."}</p>
+              </div>
+              <Sparkles className="absolute -right-2 -bottom-5 size-32 text-[#315b50] opacity-70" strokeWidth={1} />
+            </div>
+            <div className="flex flex-col justify-between rounded-xl border border-[#dce7e0] bg-[#f4faf5] p-5 sm:p-6">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8d9b95]">Current access</span>
+                <strong className="mt-3 block text-lg tracking-[-0.04em]">{user.role === "SUPER_ADMIN" ? "Super admin" : "Committee manager"}</strong>
+                <p className="mt-1 text-xs leading-relaxed text-[#71807c]">{user.role === "SUPER_ADMIN" ? "Full workspace access across every committee." : "Manage the committees assigned to you."}</p>
+              </div>
+              <span className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#27655a]"><Check size={13} /> Access verified</span>
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-end justify-between gap-4">
             <div><h2 className="text-lg font-bold tracking-[-0.04em]">Committee overview</h2><p className="mt-1 text-sm text-[#71807c]">Choose a committee to see its working space.</p></div>
             <button className="inline-flex items-center gap-1 text-xs font-bold text-[#27655a]" onClick={() => navigate("overview")}>View all <ArrowUpRight size={15} /></button>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {committees.map((item) => <CommitteeCard key={item.id} committee={item} onOpen={() => void openCommittee(item)} />)}
           </div>
 
