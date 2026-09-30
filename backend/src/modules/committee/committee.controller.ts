@@ -70,7 +70,7 @@ export const uploadMinuteController = catchAsync(async (req, res) => {
         const minute = await uploadMinute({
             committeeId: committeeIdFrom(req),
             ...payload,
-            pdfUrl: path.join("uploads", "minutes", req.file.filename),
+            pdfUrl: path.posix.join("uploads", "minutes", req.file.filename),
         });
 
         res.status(201).json({

@@ -19,7 +19,13 @@ export const listCommittees = (userId: string, isSuperAdmin: boolean) =>
 export const getCommittee = async (committeeId: string) => {
     const committee = await findCommitteeById(committeeId);
     if (!committee) throw new AppError("Committee not found", 404);
-    return committee;
+    return {
+        ...committee,
+        meetingMinutes: committee.meetingMinutes.map((minute) => ({
+            ...minute,
+            pdfUrl: meetingMinuteDownloadUrl(committeeId, minute.id),
+        })),
+    };
 };
 
 export const createNewCommittee = async (data: {

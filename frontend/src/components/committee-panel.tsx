@@ -18,6 +18,9 @@ interface CommitteePanelProps {
 }
 
 export function CommitteePanel({committee, canManage, token, user, onRefresh, onError}: CommitteePanelProps) {
+  const canManageMembers = user.role === "SUPER_ADMIN"
+    || committee.chairman.id === user.id
+    || committee.secretary.id === user.id;
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -27,13 +30,13 @@ export function CommitteePanel({committee, canManage, token, user, onRefresh, on
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!canManage) return;
+    if (!canManageMembers) return;
 
     api.faculty(token)
       .then(setFaculty)
       .catch((error: unknown) => onError(error instanceof Error ? error.message : "Could not load faculty members"))
       .finally(() => setLoadingFaculty(false));
-  }, [canManage, onError, token]);
+  }, [canManageMembers, onError, token]);
 
   async function upload(event: FormEvent) {
     event.preventDefault();
@@ -105,9 +108,9 @@ export function CommitteePanel({committee, canManage, token, user, onRefresh, on
           <div className="grid gap-2">
             <Person label="Chairman" person={committee.chairman} />
             <Person label="Secretary" person={committee.secretary} />
-            {committee.members.map((member) => <div className="flex items-center gap-3 rounded-lg bg-[#fafcf9] p-2.5" key={member.id}><Avatar name={member.faculty.name} /><div className="grid flex-1 gap-0.5"><strong className="text-xs">{member.faculty.name}</strong><span className="text-[10px] text-[#71807c]">{member.faculty.designation ?? "Committee member"}</span></div>{canManage && <button className="grid size-8 place-items-center rounded-lg border border-[#e4ebe7] text-[#70807b] transition hover:border-[#efc9bd] hover:text-[#c7674d]" onClick={() => void removeMember(member.faculty.id)} title="Remove member"><Trash2 size={15} /></button>}</div>)}
+            {committee.members.map((member) => <div className="flex items-center gap-3 rounded-lg bg-[#fafcf9] p-2.5" key={member.id}><Avatar name={member.faculty.name} /><div className="grid flex-1 gap-0.5"><strong className="text-xs">{member.faculty.name}</strong><span className="text-[10px] text-[#71807c]">{member.faculty.designation ?? "Committee member"}</span></div>{canManageMembers && <button className="grid size-8 place-items-center rounded-lg border border-[#e4ebe7] text-[#70807b] transition hover:border-[#efc9bd] hover:text-[#c7674d]" onClick={() => void removeMember(member.faculty.id)} title="Remove member"><Trash2 size={15} /></button>}</div>)}
           </div>
-          {canManage && <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={addMember}><select className="min-w-0 flex-1 rounded-lg border border-[#e4ebe7] bg-white px-3 py-2.5 text-xs outline-none focus:border-[#8bc0a1] focus:ring-4 focus:ring-[#dcefe5]" value={facultyId} onChange={(event) => setFacultyId(event.target.value)} required disabled={loadingFaculty}><option value="">{loadingFaculty ? "Loading faculty details..." : "Select faculty by email"}</option>{faculty.map((member) => <option key={member.id} value={member.id}>{member.name} · {member.email}{member.department ? ` · ${member.department}` : ""}</option>)}</select><button className="inline-flex items-center justify-center gap-1 rounded-lg bg-[#e8f2eb] px-3 py-2 text-xs font-bold text-[#27655a] disabled:opacity-60" type="submit" disabled={loadingFaculty}><Plus size={15} /> Add faculty</button></form>}
+          {canManageMembers && <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={addMember}><select className="min-w-0 flex-1 rounded-lg border border-[#e4ebe7] bg-white px-3 py-2.5 text-xs outline-none focus:border-[#8bc0a1] focus:ring-4 focus:ring-[#dcefe5]" value={facultyId} onChange={(event) => setFacultyId(event.target.value)} required disabled={loadingFaculty}><option value="">{loadingFaculty ? "Loading faculty details..." : "Select faculty by email"}</option>{faculty.map((member) => <option key={member.id} value={member.id}>{member.name} · {member.email}{member.department ? ` · ${member.department}` : ""}</option>)}</select><button className="inline-flex items-center justify-center gap-1 rounded-lg bg-[#e8f2eb] px-3 py-2 text-xs font-bold text-[#27655a] disabled:opacity-60" type="submit" disabled={loadingFaculty}><Plus size={15} /> Add faculty</button></form>}
         </div>
         <div>
           <SectionHeading title="Meeting minutes" description="Uploaded decisions and records." />
