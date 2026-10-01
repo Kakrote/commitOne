@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-committee_management}
+      POSTGRES_USER: ${POSTGRES_USER:-committee}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-committee_dev_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-committee}:${POSTGRES_PASSWORD:-committee_dev_password}@db:5432/${POSTGRES_DB:-committee_management}
+      PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:-change-this-development-secret}
+      ADMIN_NAME: ${ADMIN_NAME:-System Administrator}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@committee.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_data:/app/uploads/minutes
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000/api}
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  uploads_data:

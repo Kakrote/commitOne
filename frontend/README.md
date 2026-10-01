@@ -1,4 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) frontend for the Convene committee workspace.
+
+## Run the full stack with Docker
+
+From the repository root:
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:3001`. The API is available at `http://localhost:3000`.
+
+The first startup applies Prisma migrations and seeds the administrator configured by `ADMIN_EMAIL` and `ADMIN_PASSWORD`. PostgreSQL data and uploaded PDFs are stored in named Docker volumes. Set those variables, along with `JWT_SECRET`, in a root `.env` file before using this beyond local development.
 
 ## Getting Started
 

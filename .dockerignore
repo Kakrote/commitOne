@@ -1,0 +1,16 @@
+.git
+.gitignore
+.agents
+.claude
+.windsurf
+**/node_modules
+**/.next
+**/dist
+**/build
+**/.env
+**/.env.*
+!**/.env.example
+backend/uploads
+frontend/README.md
+frontend/tsconfig.tsbuildinfo
+*.log
