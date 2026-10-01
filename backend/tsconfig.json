@@ -16,5 +16,5 @@
     "forceConsistentCasingInFileNames": true
   },
 
-  "include": ["src", "server.ts"]
+  "include": ["src", "prisma/seed.ts", "server.ts"]
 }
