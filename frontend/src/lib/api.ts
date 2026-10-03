@@ -1,6 +1,6 @@
 import type {Committee, CommitteeSummary, Faculty, MeetingMinute, PublicCommittee, User} from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 
 interface ApiResponse<T> { success: boolean; data: T; message?: string; }
 
