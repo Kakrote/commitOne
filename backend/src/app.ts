@@ -6,7 +6,9 @@ import {apiRateLimiter} from "./middlewares/rate-limit.middleware";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin:"*",
+}));
 app.use(express.json());
 
 app.get("/",(req,res)=>{
