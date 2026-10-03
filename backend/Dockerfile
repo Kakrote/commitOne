@@ -36,5 +36,5 @@ COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 
 RUN mkdir -p /app/uploads/minutes
 
-EXPOSE 3000
+EXPOSE 3001
 CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm start"]
