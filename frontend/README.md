@@ -12,25 +12,26 @@ Open `http://localhost:3002`. The API is available at `http://localhost:3001`.
 
 The first startup applies Prisma migrations and seeds the administrator configured by `ADMIN_EMAIL` and `ADMIN_PASSWORD`. PostgreSQL data and uploaded PDFs are stored in named Docker volumes. Set those variables, along with `JWT_SECRET`, in a root `.env` file before using this beyond local development.
 
-## Getting Started
+## Run the frontend directly
 
-First, run the development server:
+From the `frontend` directory, install dependencies and run the development server:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3002](http://localhost:3002) with your browser. The frontend uses `http://localhost:3001/api` as its default API URL; override it with `NEXT_PUBLIC_API_URL` when the API is hosted elsewhere.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The public meeting-minute archive is available at [http://localhost:3002/public](http://localhost:3002/public).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Build and start
+
+```bash
+npm run lint
+npm run build
+npm start
+```
 
 ## Learn More
 
