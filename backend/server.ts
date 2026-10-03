@@ -3,7 +3,7 @@ import app from "./src/app";
 import logger from "./src/utils/logger";
 
 
-const PORT = process.env.PORT||3001 ;
+const PORT = process.env.PORT || 3001;
 
 (async ()=>{
     try{
