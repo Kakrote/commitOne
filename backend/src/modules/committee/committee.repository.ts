@@ -40,6 +40,33 @@ export const findCommittees = (facultyId?: string) => prisma.committee.findMany(
     orderBy: {createdAt: "desc"},
 });
 
+export const findPublicCommittees = () => prisma.committee.findMany({
+    select: {
+        id: true,
+        name: true,
+        description: true,
+        chairman: {select: facultySummary},
+        secretary: {select: facultySummary},
+        createdAt: true,
+        _count: {select: {members: true, meetingMinutes: true}},
+    },
+    orderBy: {name: "asc"},
+});
+
+export const findPublicCommitteeById = (id: string) => prisma.committee.findUnique({
+    where: {id},
+    select: {
+        id: true,
+        name: true,
+        description: true,
+        chairman: {select: facultySummary},
+        secretary: {select: facultySummary},
+        createdAt: true,
+        _count: {select: {members: true, meetingMinutes: true}},
+        meetingMinutes: {orderBy: {meetingDate: "desc" as const}},
+    },
+});
+
 export const findCommitteeById = (id: string) => prisma.committee.findUnique({
     where: {id},
     include: committeeInclude,

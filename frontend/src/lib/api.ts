@@ -1,4 +1,4 @@
-import type {Committee, CommitteeSummary, Faculty, MeetingMinute, User} from "./types";
+import type {Committee, CommitteeSummary, Faculty, MeetingMinute, PublicCommittee, User} from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api";
 
@@ -29,6 +29,8 @@ export const api = {
   createCommittee: (payload: {name: string; description?: string; chairman: AccountInput; secretary: AccountInput}, token: string) => request<CommitteeSummary>("/committees", {method: "POST", body: JSON.stringify(payload)}, token),
   committees: (token: string) => request<CommitteeSummary[]>("/committees", {}, token),
   committee: (id: string, token: string) => request<Committee>(`/committees/${id}`, {}, token),
+  publicCommittees: () => request<CommitteeSummary[]>("/public/committees"),
+  publicCommittee: (id: string) => request<PublicCommittee>(`/public/committees/${id}`),
   addMember: (committeeId: string, facultyId: string, token: string) => request<unknown>(`/committees/${committeeId}/members`, {method: "POST", body: JSON.stringify({facultyId})}, token),
   removeMember: (committeeId: string, facultyId: string, token: string) => request<unknown>(`/committees/${committeeId}/members/${facultyId}`, {method: "DELETE"}, token),
   uploadMinute: (committeeId: string, form: FormData, token: string) => request<MeetingMinute>(`/committees/${committeeId}/minutes`, {method: "POST", body: form}, token),

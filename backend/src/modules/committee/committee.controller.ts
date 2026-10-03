@@ -11,6 +11,8 @@ import {
     getMeetingMinute,
     listCommittees,
     listMinutes,
+    listPublicCommittees,
+    getPublicCommittee,
     meetingMinuteDownloadUrl,
     removeFacultyFromCommittee,
     uploadMinute,
@@ -89,4 +91,18 @@ export const uploadMinuteController = catchAsync(async (req, res) => {
 export const downloadMinuteController = catchAsync(async (req, res) => {
     const minute = await getMeetingMinute(committeeIdFrom(req), req.params.minuteId as string);
     res.sendFile(path.resolve(process.cwd(), minute.pdfUrl));
+});
+
+export const listPublicCommitteesController = catchAsync(async (_req, res) => {
+    res.json({success: true, data: await listPublicCommittees()});
+});
+
+export const getPublicCommitteeController = catchAsync(async (req, res) => {
+    res.json({success: true, data: await getPublicCommittee(req.params.committeeId as string)});
+});
+
+export const downloadPublicMinuteController = catchAsync(async (req, res) => {
+    const committeeId = req.params.committeeId as string;
+    const minute = await getMeetingMinute(committeeId, req.params.minuteId as string);
+    res.download(path.resolve(process.cwd(), minute.pdfUrl), path.basename(minute.pdfUrl));
 });

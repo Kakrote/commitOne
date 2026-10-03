@@ -39,3 +39,7 @@ export interface Committee extends CommitteeSummary {
   members: Array<{id: string; joinedAt: string; faculty: Faculty}>;
   meetingMinutes: MeetingMinute[];
 }
+
+export interface PublicCommittee extends CommitteeSummary {
+  meetingMinutes: MeetingMinute[];
+}

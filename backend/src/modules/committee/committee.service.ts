@@ -11,10 +11,27 @@ import {
     findMeetingMinutes,
     findMeetingMinuteById,
     removeCommitteeMember,
+    findPublicCommitteeById,
+    findPublicCommittees,
 } from "./committee.repository";
 
 export const listCommittees = (userId: string, isSuperAdmin: boolean) =>
     findCommittees(isSuperAdmin ? undefined : userId);
+
+export const listPublicCommittees = () => findPublicCommittees();
+
+export const getPublicCommittee = async (committeeId: string) => {
+    const committee = await findPublicCommitteeById(committeeId);
+    if (!committee) throw new AppError("Committee not found", 404);
+
+    return {
+        ...committee,
+        meetingMinutes: committee.meetingMinutes.map((minute) => ({
+            ...minute,
+            pdfUrl: publicMeetingMinuteDownloadUrl(committeeId, minute.id),
+        })),
+    };
+};
 
 export const getCommittee = async (committeeId: string) => {
     const committee = await findCommitteeById(committeeId);
@@ -91,6 +108,9 @@ export const listMinutes = async (committeeId: string) => findMeetingMinutes(com
 
 export const meetingMinuteDownloadUrl = (committeeId: string, minuteId: string) =>
     `/api/committees/${committeeId}/minutes/${minuteId}/file`;
+
+export const publicMeetingMinuteDownloadUrl = (committeeId: string, minuteId: string) =>
+    `/api/public/committees/${committeeId}/minutes/${minuteId}/file`;
 
 export const getMeetingMinute = async (committeeId: string, minuteId: string) => {
     const minute = await findMeetingMinuteById(committeeId, minuteId);
