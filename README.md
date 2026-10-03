@@ -17,6 +17,10 @@ Convene is a committee management application for organizing committees, officer
 
 When running locally:
 
+
+
+
+
 - Frontend: http://localhost:3002
 - Public meeting-minute archive: http://localhost:3002/public
 - Backend API: http://localhost:3001/api
