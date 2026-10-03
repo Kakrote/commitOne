@@ -7,7 +7,10 @@ import {apiRateLimiter} from "./middlewares/rate-limit.middleware";
 const app = express();
 
 app.use(cors({
-    origin:"*",
+    origin:[
+        "http://localhost:3002",
+        "http://192.168.8.11:3002",
+    ],
 }));
 app.use(express.json());
 
