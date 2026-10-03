@@ -8,7 +8,7 @@ From the repository root:
 docker compose up --build
 ```
 
-Open `http://localhost:3001`. The API is available at `http://localhost:3000`.
+Open `http://localhost:3002`. The API is available at `http://localhost:3001`.
 
 The first startup applies Prisma migrations and seeds the administrator configured by `ADMIN_EMAIL` and `ADMIN_PASSWORD`. PostgreSQL data and uploaded PDFs are stored in named Docker volumes. Set those variables, along with `JWT_SECRET`, in a root `.env` file before using this beyond local development.
 
